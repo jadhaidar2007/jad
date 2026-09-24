@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
+  api:
+    build: .
+    command: uvicorn clipengine.api.server:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - redis
+    volumes:
+      - ./workdir:/app/workdir
+      - ./secrets:/app/secrets
+
+  worker:
+    build: .
+    command: rq worker clipengine --url redis://redis:6379/0
+    env_file: .env
+    depends_on:
+      - redis
+    volumes:
+      - ./workdir:/app/workdir
+      - ./secrets:/app/secrets
+    # Run 2-3 of these (docker compose up --scale worker=3) to process
+    # multiple videos in parallel and stay under the 15-minute target
+    # even when several links land at once.
+
+volumes:
+  redis_data:
