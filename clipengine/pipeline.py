@@ -35,7 +35,7 @@ class PipelineResult:
     elapsed_seconds: float
 
 
-def run_pipeline(youtube_url: str) -> PipelineResult:
+def run_pipeline(youtube_url: str, campaign_guidelines: str | None = None) -> PipelineResult:
     t0 = time.monotonic()
     run_dir = config.WORK_DIR / str(int(t0))
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -47,7 +47,7 @@ def run_pipeline(youtube_url: str) -> PipelineResult:
     transcript = transcribe(source.file_path, run_dir)
 
     logger.info("[3/4] Selecting best moments")
-    picks = select_clips(transcript)
+    picks = select_clips(transcript, campaign_guidelines=campaign_guidelines)
     if not picks:
         logger.warning("No clips selected for %s", youtube_url)
         return PipelineResult(source.video_id, source.title, [], time.monotonic() - t0)
@@ -74,15 +74,16 @@ def run_pipeline(youtube_url: str) -> PipelineResult:
 
 
 def _post_everywhere(file_path, title: str, caption: str, result: ClipResult) -> None:
+    # TikTok uploads the local file directly (FILE_UPLOAD) — no public
+    # storage needed. Only Instagram's Graph API requires a public URL.
     public_url_ready = False
-    if "tiktok" in config.ENABLED_PLATFORMS or "instagram" in config.ENABLED_PLATFORMS:
+    if "instagram" in config.ENABLED_PLATFORMS:
         try:
             storage.publish_to_public_storage(file_path)
             public_url_ready = True
         except Exception as e:
             logger.exception("Failed to publish clip to public storage")
-            for platform in ("tiktok", "instagram"):
-                result.errors[platform] = f"storage upload failed: {e}"
+            result.errors["instagram"] = f"storage upload failed: {e}"
 
     if "youtube" in config.ENABLED_PLATFORMS:
         try:
@@ -92,7 +93,7 @@ def _post_everywhere(file_path, title: str, caption: str, result: ClipResult) ->
             logger.exception("YouTube upload failed")
             result.errors["youtube"] = str(e)
 
-    if "tiktok" in config.ENABLED_PLATFORMS and public_url_ready:
+    if "tiktok" in config.ENABLED_PLATFORMS:
         try:
             tiktok.upload_video(file_path, title)
             result.posted_to.append("tiktok")

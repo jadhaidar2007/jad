@@ -1,5 +1,9 @@
 """Upload a clip to TikTok via the Content Posting API.
 
+Uses FILE_UPLOAD (direct chunked PUT of the local file) instead of
+PULL_FROM_URL, so no public bucket/S3 hosting is needed — this keeps
+TikTok posting at $0 infra cost beyond the API call itself.
+
 Setup (one-time, per TikTok account):
   1. Register a developer app at developers.tiktok.com -> add the
      "Content Posting API" product.
@@ -27,6 +31,8 @@ logger = logging.getLogger(__name__)
 TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/"
 INIT_URL = "https://open.tiktokapis.com/v2/post/publish/video/init/"
 
+CHUNK_SIZE = 10 * 1024 * 1024  # 10MB, TikTok's recommended chunk size
+
 
 def _refresh_access_token() -> str:
     resp = requests.post(
@@ -45,13 +51,9 @@ def _refresh_access_token() -> str:
 
 
 def upload_video(file_path: Path, title: str) -> str:
-    if not config.PUBLIC_CLIP_BASE_URL:
-        raise RuntimeError(
-            "PUBLIC_CLIP_BASE_URL not set — TikTok pulls the video by URL, "
-            "it needs to be uploaded to public storage (S3/GCS) first."
-        )
-    video_url = f"{config.PUBLIC_CLIP_BASE_URL.rstrip('/')}/{file_path.name}"
     access_token = _refresh_access_token() if config.TIKTOK_REFRESH_TOKEN else config.TIKTOK_ACCESS_TOKEN
+    video_size = file_path.stat().st_size
+    total_chunk_count = max(1, (video_size + CHUNK_SIZE - 1) // CHUNK_SIZE)
 
     payload = {
         "post_info": {
@@ -62,11 +64,13 @@ def upload_video(file_path: Path, title: str) -> str:
             "disable_stitch": False,
         },
         "source_info": {
-            "source": "PULL_FROM_URL",
-            "video_url": video_url,
+            "source": "FILE_UPLOAD",
+            "video_size": video_size,
+            "chunk_size": min(CHUNK_SIZE, video_size),
+            "total_chunk_count": total_chunk_count,
         },
     }
-    resp = requests.post(
+    init_resp = requests.post(
         INIT_URL,
         json=payload,
         headers={
@@ -75,8 +79,24 @@ def upload_video(file_path: Path, title: str) -> str:
         },
         timeout=30,
     )
-    resp.raise_for_status()
-    data = resp.json()
-    publish_id = data["data"]["publish_id"]
-    logger.info("TikTok publish initiated: %s", publish_id)
+    init_resp.raise_for_status()
+    init_data = init_resp.json()["data"]
+    publish_id = init_data["publish_id"]
+    upload_url = init_data["upload_url"]
+
+    with open(file_path, "rb") as f:
+        video_bytes = f.read()
+
+    put_resp = requests.put(
+        upload_url,
+        data=video_bytes,
+        headers={
+            "Content-Type": "video/mp4",
+            "Content-Range": f"bytes 0-{video_size - 1}/{video_size}",
+        },
+        timeout=120,
+    )
+    put_resp.raise_for_status()
+
+    logger.info("TikTok publish initiated (FILE_UPLOAD): %s", publish_id)
     return publish_id

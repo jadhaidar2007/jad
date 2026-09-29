@@ -37,17 +37,36 @@ class ClipPick:
     score: int
 
 
-def select_clips(transcript: Transcript, max_clips: int = None) -> list[ClipPick]:
+def select_clips(
+    transcript: Transcript,
+    max_clips: int = None,
+    campaign_guidelines: str | None = None,
+) -> list[ClipPick]:
+    """campaign_guidelines: paste-in text from a Whop (or any) clipping
+    campaign brief — required clip themes, banned topics, required
+    hashtags/mentions, tone, min/max length overrides, etc. Injected
+    directly into the selection prompt so the engine follows that specific
+    campaign's rules instead of generic "best moments" picking.
+    """
     max_clips = max_clips or config.MAX_CLIPS_PER_VIDEO
     if not config.ANTHROPIC_API_KEY:
         raise RuntimeError("ANTHROPIC_API_KEY not set — required for clip selection")
 
     client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
 
+    guidelines_block = (
+        f"\n\nCAMPAIGN GUIDELINES (follow these exactly — they override the "
+        f"general rules above where they conflict):\n{campaign_guidelines.strip()}\n"
+        if campaign_guidelines and campaign_guidelines.strip()
+        else ""
+    )
+
     user_prompt = (
         f"Pick up to {max_clips} clips. Each clip must be between "
         f"{config.MIN_CLIP_SECONDS} and {config.MAX_CLIP_SECONDS} seconds long. "
-        f"Clips must not overlap.\n\nTRANSCRIPT (timestamps in seconds):\n"
+        f"Clips must not overlap."
+        f"{guidelines_block}"
+        f"\n\nTRANSCRIPT (timestamps in seconds):\n"
         f"{transcript.as_prompt_text()}"
     )
 

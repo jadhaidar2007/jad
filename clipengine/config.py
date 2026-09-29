@@ -12,7 +12,10 @@ WORK_DIR.mkdir(parents=True, exist_ok=True)
 
 # LLM used to pick the best moments from the transcript
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-CLIP_SELECTION_MODEL = os.getenv("CLIP_SELECTION_MODEL", "claude-sonnet-5")
+# Haiku 4.5 ($1/$5 per MTok) — a transcript-ranking task like this doesn't
+# need Sonnet-tier reasoning; this is the cheapest current model and keeps
+# the marginal cost per video close to a fraction of a cent.
+CLIP_SELECTION_MODEL = os.getenv("CLIP_SELECTION_MODEL", "claude-haiku-4-5")
 
 # Whisper transcription
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "small")
@@ -41,9 +44,10 @@ IG_BUSINESS_ACCOUNT_ID = os.getenv("IG_BUSINESS_ACCOUNT_ID", "")
 IG_APP_ID = os.getenv("IG_APP_ID", "")
 IG_APP_SECRET = os.getenv("IG_APP_SECRET", "")
 
-# Where finished clips must be publicly reachable from (IG/TikTok pull the
-# video by URL, they don't accept raw file uploads). Point this at an S3
-# bucket / GCS bucket / any static file host you control.
+# Only needed if "instagram" is in ENABLED_PLATFORMS — Instagram's Graph API
+# requires clips to be pulled from a public URL. TikTok uploads the local
+# file directly and does not need this. Cloudflare R2's free tier (10GB
+# storage, no egress fee) keeps this at $0 for low clip volume.
 PUBLIC_CLIP_BASE_URL = os.getenv("PUBLIC_CLIP_BASE_URL", "")
 
 # Redis-backed job queue
@@ -51,6 +55,6 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 ENABLED_PLATFORMS = [
     p.strip()
-    for p in os.getenv("ENABLED_PLATFORMS", "youtube,tiktok,instagram").split(",")
+    for p in os.getenv("ENABLED_PLATFORMS", "tiktok,instagram").split(",")
     if p.strip()
 ]

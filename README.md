@@ -75,17 +75,49 @@ curl localhost:8000/clip/<job_id>
 Scale `worker` up (`--scale worker=N`) to process multiple source videos in
 parallel and stay inside the 15-minute target when several links land at once.
 
-## 3. Tuning
+## 3. Keeping this at ~$0 recurring cost
+
+The whole pipeline is designed so the only real marginal cost is the LLM
+call, and even that is fractions of a cent per video:
+
+| Component | Cost | How |
+|---|---|---|
+| Download (yt-dlp), transcription (Whisper), editing (ffmpeg) | **$0** | All open-source, run on your own hardware/electricity |
+| Clip selection LLM | **~$0.001–0.01/video** | Defaults to `claude-haiku-4-5` ($1/$5 per million tokens) — plenty for ranking transcript segments, no need for a pricier model |
+| TikTok upload | **$0** | Uses TikTok's direct `FILE_UPLOAD` — your file goes straight to TikTok, no bucket/hosting required |
+| Instagram upload | **$0 at low volume** | Instagram's API requires a public URL to pull from — point `PUBLIC_CLIP_BASE_URL` at a [Cloudflare R2](https://developers.cloudflare.com/r2/) bucket (10GB storage + unlimited free egress on the free tier) |
+| Hosting | **$0** | Run `docker compose up` on your own PC instead of a cloud VM — Redis + the worker + the API all run fine locally; nothing here needs to be always-on unless you want jobs to run while your machine is off |
+| Whisper compute | **$0** | `WHISPER_MODEL_SIZE=small` on CPU is free and fast enough for the 15-min target; only pay for a GPU box if you outgrow local hardware |
+
+**If you're TikTok-only for now**, set `ENABLED_PLATFORMS=tiktok` in `.env` —
+that drops the Instagram/R2 storage step entirely and the only cost left in
+the whole system is the sub-cent Haiku call per video.
+
+**Campaign guidelines (e.g. a Whop clipping brief):** pass them per-job via
+the `campaign_guidelines` field on `POST /clip` — paste in the campaign's
+rules (required themes, banned topics, hashtags, tone) and the selection
+step follows them instead of generic "best moments" picking:
+
+```bash
+curl -X POST localhost:8000/clip \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "youtube_url": "https://youtu.be/VIDEO_ID",
+    "campaign_guidelines": "Paste the Whop campaign brief here — required hashtags, tone, banned topics, min views target, etc."
+  }'
+```
+
+## 4. Tuning
 
 - `MAX_CLIPS_PER_VIDEO`, `MIN_CLIP_SECONDS`, `MAX_CLIP_SECONDS` — clip count/length.
 - `WHISPER_MODEL_SIZE` — `small` is the CPU-friendly default; use `medium`/`large-v3`
   with `WHISPER_DEVICE=cuda` on a GPU box for better transcripts, still fast enough
   to hit the 15-minute budget.
-- `ENABLED_PLATFORMS` — drop platforms you haven't authorized yet, e.g. `youtube` only.
+- `ENABLED_PLATFORMS` — defaults to `tiktok,instagram`; set to `tiktok` alone while you're TikTok-only.
 - TikTok's `privacy_level` in `clipengine/upload/tiktok.py` defaults to
   `SELF_ONLY` — flip to `PUBLIC_TO_EVERYONE` only once your app has passed audit.
 
-## 4. Legal/ToS note
+## 5. Legal/ToS note
 
 Downloading and reposting *other people's* YouTube videos without permission
 is a copyright and platform-ToS risk, and none of the platforms pay for
