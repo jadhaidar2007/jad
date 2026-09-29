@@ -9,8 +9,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 logger = logging.getLogger(__name__)
 
 
-def process_video(youtube_url: str, campaign_guidelines: str | None = None) -> dict:
-    result = run_pipeline(youtube_url, campaign_guidelines=campaign_guidelines)
+def process_video(youtube_url: str, rulebook: str | None = None) -> dict:
+    result = run_pipeline(youtube_url, rulebook=rulebook)
     return {
         "video_id": result.video_id,
         "video_title": result.video_title,

@@ -50,7 +50,7 @@ upload, so clips need to land somewhere public first. Point `PUBLIC_CLIP_BASE_UR
 Backblaze B2) with public-read objects.
 
 ### LLM for clip selection
-Set `ANTHROPIC_API_KEY` — used to rank transcript segments into the best
+Set `DEEPSEEK_API_KEY` — used to rank transcript segments into the best
 standalone clips.
 
 ## 2. Run it
@@ -83,7 +83,7 @@ call, and even that is fractions of a cent per video:
 | Component | Cost | How |
 |---|---|---|
 | Download (yt-dlp), transcription (Whisper), editing (ffmpeg) | **$0** | All open-source, run on your own hardware/electricity |
-| Clip selection LLM | **~$0.001–0.01/video** | Defaults to `claude-haiku-4-5` ($1/$5 per million tokens) — plenty for ranking transcript segments, no need for a pricier model |
+| Clip selection + rulebook parsing LLM | **~fractions of a cent/video** | DeepSeek (`deepseek-chat`) via its OpenAI-compatible API — a few thousand tokens per video, so a $3 balance covers a very large number of videos (check DeepSeek's pricing page for current rates) |
 | TikTok upload | **$0** | Uses TikTok's direct `FILE_UPLOAD` — your file goes straight to TikTok, no bucket/hosting required |
 | Instagram upload | **$0 at low volume** | Instagram's API requires a public URL to pull from — point `PUBLIC_CLIP_BASE_URL` at a [Cloudflare R2](https://developers.cloudflare.com/r2/) bucket (10GB storage + unlimited free egress on the free tier) |
 | Hosting | **$0** | Run `docker compose up` on your own PC instead of a cloud VM — Redis + the worker + the API all run fine locally; nothing here needs to be always-on unless you want jobs to run while your machine is off |
@@ -91,19 +91,23 @@ call, and even that is fractions of a cent per video:
 
 **If you're TikTok-only for now**, set `ENABLED_PLATFORMS=tiktok` in `.env` —
 that drops the Instagram/R2 storage step entirely and the only cost left in
-the whole system is the sub-cent Haiku call per video.
+the whole system is the sub-cent DeepSeek calls per video.
 
-**Campaign guidelines (e.g. a Whop clipping brief):** pass them per-job via
-the `campaign_guidelines` field on `POST /clip` — paste in the campaign's
-rules (required themes, banned topics, hashtags, tone) and the selection
-step follows them instead of generic "best moments" picking:
+**Rulebook (per video):** every job takes the creator's do/don't rules as
+free text in the `rulebook` field. DeepSeek reads the rulebook twice:
+
+1. **Parsed into hard constraints** and enforced in code: min/max clip length,
+   max clips, required hashtags/@mentions (appended to every caption), and
+   banned words/phrases (any clip whose spoken text contains one is dropped).
+2. **Passed into the clip-picking prompt** so softer rules (tone, topics to
+   avoid, content types) shape which moments get chosen.
 
 ```bash
 curl -X POST localhost:8000/clip \
   -H 'Content-Type: application/json' \
   -d '{
     "youtube_url": "https://youtu.be/VIDEO_ID",
-    "campaign_guidelines": "Paste the Whop campaign brief here — required hashtags, tone, banned topics, min views target, etc."
+    "rulebook": "Clips 20-45s. Must include #ad and tag @creator. No profanity. No clips about politics. No sponsor segments."
   }'
 ```
 

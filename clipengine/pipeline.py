@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from clipengine import config
 from clipengine.edit.clipper import render_clip
 from clipengine.ingest.download import download_video
+from clipengine.rules import parse_rulebook
 from clipengine.select.select_clips import select_clips
 from clipengine.transcribe.whisper_transcribe import transcribe
 from clipengine.upload import instagram, storage, tiktok, youtube
@@ -35,8 +36,9 @@ class PipelineResult:
     elapsed_seconds: float
 
 
-def run_pipeline(youtube_url: str, campaign_guidelines: str | None = None) -> PipelineResult:
+def run_pipeline(youtube_url: str, rulebook: str | None = None) -> PipelineResult:
     t0 = time.monotonic()
+    rules = parse_rulebook(rulebook)
     run_dir = config.WORK_DIR / str(int(t0))
     run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -47,7 +49,7 @@ def run_pipeline(youtube_url: str, campaign_guidelines: str | None = None) -> Pi
     transcript = transcribe(source.file_path, run_dir)
 
     logger.info("[3/4] Selecting best moments")
-    picks = select_clips(transcript, campaign_guidelines=campaign_guidelines)
+    picks = select_clips(transcript, rules, source.duration_s)
     if not picks:
         logger.warning("No clips selected for %s", youtube_url)
         return PipelineResult(source.video_id, source.title, [], time.monotonic() - t0)
@@ -64,8 +66,10 @@ def run_pipeline(youtube_url: str, campaign_guidelines: str | None = None) -> Pi
             continue
 
         result = ClipResult(title=pick.title, file_path=str(rendered.file_path))
-        caption = f"{pick.hook}\n\n{pick.title}"
-        _post_everywhere(rendered.file_path, pick.title, caption, result)
+        suffix = rules.caption_suffix()
+        title = f"{pick.title} {suffix}".strip()
+        caption = f"{pick.hook}\n\n{pick.title}\n\n{suffix}".strip()
+        _post_everywhere(rendered.file_path, title, caption, result)
         results.append(result)
 
     elapsed = time.monotonic() - t0

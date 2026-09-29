@@ -24,14 +24,12 @@ queue = Queue("clipengine", connection=redis_conn, default_timeout=1800)
 
 class ClipRequest(BaseModel):
     youtube_url: str
-    campaign_guidelines: str | None = None  # paste the Whop campaign brief here
+    rulebook: str | None = None  # the creator's do/don't rules for this video
 
 
 @app.post("/clip")
 def enqueue_clip_job(req: ClipRequest):
-    job = queue.enqueue(
-        "clipengine.worker.tasks.process_video", req.youtube_url, req.campaign_guidelines
-    )
+    job = queue.enqueue("clipengine.worker.tasks.process_video", req.youtube_url, req.rulebook)
     return {"job_id": job.id, "status": job.get_status()}
 
 

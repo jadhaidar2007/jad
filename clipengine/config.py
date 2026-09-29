@@ -11,11 +11,9 @@ WORK_DIR = Path(os.getenv("CLIPENGINE_WORK_DIR", BASE_DIR / "workdir"))
 WORK_DIR.mkdir(parents=True, exist_ok=True)
 
 # LLM used to pick the best moments from the transcript
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
-# Haiku 4.5 ($1/$5 per MTok) — a transcript-ranking task like this doesn't
-# need Sonnet-tier reasoning; this is the cheapest current model and keeps
-# the marginal cost per video close to a fraction of a cent.
-CLIP_SELECTION_MODEL = os.getenv("CLIP_SELECTION_MODEL", "claude-haiku-4-5")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
+LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
 
 # Whisper transcription
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "small")
