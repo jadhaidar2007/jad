@@ -36,7 +36,9 @@ class PipelineResult:
     elapsed_seconds: float
 
 
-def run_pipeline(youtube_url: str, rulebook: str | None = None) -> PipelineResult:
+def run_pipeline(
+    youtube_url: str, rulebook: str | None = None, dry_run: bool = False
+) -> PipelineResult:
     t0 = time.monotonic()
     rules = parse_rulebook(rulebook)
     run_dir = config.WORK_DIR / str(int(t0))
@@ -69,7 +71,10 @@ def run_pipeline(youtube_url: str, rulebook: str | None = None) -> PipelineResul
         suffix = rules.caption_suffix()
         title = f"{pick.title} {suffix}".strip()
         caption = f"{pick.hook}\n\n{pick.title}\n\n{suffix}".strip()
-        _post_everywhere(rendered.file_path, title, caption, result)
+        if dry_run:
+            logger.info("dry_run: skipping upload. Caption would be:\n%s", caption)
+        else:
+            _post_everywhere(rendered.file_path, title, caption, result)
         results.append(result)
 
     elapsed = time.monotonic() - t0

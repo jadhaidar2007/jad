@@ -14,7 +14,9 @@ SYSTEM_PROMPT = """You are a short-form video editor picking the clips most like
 on TikTok, Instagram Reels and YouTube Shorts from a long-form video transcript.
 
 Viral clips are STANDALONE (no outside context needed) and have:
-- A hook in the first 2-3 seconds (bold claim, question, shocking or funny statement)
+- A hook in the first 3 seconds that puts the payoff or outcome up front (bold claim, surprising
+  result, question) so viewers know what they get before deciding to swipe
+- Ideal length 30-45 seconds unless the rulebook says otherwise
 - A complete arc that pays off before the clip ends
 - Strong emotion: controversy, humor, surprise, a valuable insight, or a story climax
 - Clean start and end points at sentence boundaries

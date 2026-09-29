@@ -22,8 +22,8 @@ WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
 
 # Clip generation
 MAX_CLIPS_PER_VIDEO = int(os.getenv("MAX_CLIPS_PER_VIDEO", "10"))
-MIN_CLIP_SECONDS = int(os.getenv("MIN_CLIP_SECONDS", "20"))
-MAX_CLIP_SECONDS = int(os.getenv("MAX_CLIP_SECONDS", "90"))
+MIN_CLIP_SECONDS = int(os.getenv("MIN_CLIP_SECONDS", "25"))
+MAX_CLIP_SECONDS = int(os.getenv("MAX_CLIP_SECONDS", "60"))
 OUTPUT_ASPECT = os.getenv("OUTPUT_ASPECT", "9:16")
 
 # YouTube Data API (upload as Shorts)

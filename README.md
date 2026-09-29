@@ -121,7 +121,24 @@ curl -X POST localhost:8000/clip \
 - TikTok's `privacy_level` in `clipengine/upload/tiktok.py` defaults to
   `SELF_ONLY` — flip to `PUBLIC_TO_EVERYONE` only once your app has passed audit.
 
-## 5. Legal/ToS note
+## 5. What earns money (research notes, Sept 2026)
+
+**What makes clips get views** (OpusClip's analysis of 13.5M clips, plus other 2026 guides):
+- Length: viral median is ~41s; 30-45s is the sweet spot (defaults are now 25-60s).
+- Hook: show the payoff/outcome in the first 3 seconds. Strong hooks keep 80-90% of viewers through 3s.
+- Captions: ~80% of viral clips have burned-in captions, ~79% animate them; accurate captions lift retention ~12%.
+- Pacing: change something on screen every 3-5s (zooms/cuts) - **not built yet**, a good next feature.
+
+**What pays** (Whop listings, 2026): advertised $0.20-$6 per 1,000 views, but the *blended* average
+payout is closer to $0.39/1k because of per-clip caps, minimum-watch-time filters, and bot filtering.
+Rough CPM by niche: crypto/web3 $4-9, finance/trading $4-6, SaaS/B2B $3-6, gaming/streamers $1-4
+(lowest pay but most open campaigns and easiest views).
+
+**Implications:** volume across many campaigns matters more than any one clip; pick campaigns with
+no or high per-clip caps; check whether views count only past a watch-time threshold (retention
+matters more than raw reach); higher-CPM niches usually mean stricter rulebooks and more competition.
+
+## 6. Legal/ToS note
 
 Downloading and reposting *other people's* YouTube videos without permission
 is a copyright and platform-ToS risk, and none of the platforms pay for
