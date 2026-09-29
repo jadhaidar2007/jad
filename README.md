@@ -127,7 +127,7 @@ curl -X POST localhost:8000/clip \
 - Length: viral median is ~41s; 30-45s is the sweet spot (defaults are now 25-60s).
 - Hook: show the payoff/outcome in the first 3 seconds. Strong hooks keep 80-90% of viewers through 3s.
 - Captions: ~80% of viral clips have burned-in captions, ~79% animate them; accurate captions lift retention ~12%.
-- Pacing: change something on screen every 3-5s (zooms/cuts) - **not built yet**, a good next feature.
+- Pacing: change something on screen every 3-5s. **Built:** clips alternate between a wide and a 12% punched-in framing, with cuts landing on word starts (`PACING_ENABLED`, `PACING_ZOOM` in `.env`).
 
 **What pays** (Whop listings, 2026): advertised $0.20-$6 per 1,000 views, but the *blended* average
 payout is closer to $0.39/1k because of per-clip caps, minimum-watch-time filters, and bot filtering.
