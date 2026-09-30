@@ -22,6 +22,10 @@ SYMBOL_ALIASES = {
 BUY_WORDS = {"buy", "long"}
 SELL_WORDS = {"sell", "short"}
 CLOSE_WORDS = {"close", "exit", "flat"}
+TP_WORDS = {"tp", "tp_hit", "takeprofit"}
+SL_WORDS = {"sl", "sl_hit", "stop", "stopped"}
+BE_WORDS = {"be", "breakeven"}
+EXIT_ACTIONS = {"close", "tp", "sl", "be"}
 
 
 class ParseError(ValueError):
@@ -30,7 +34,7 @@ class ParseError(ValueError):
 
 @dataclass
 class Signal:
-    action: str  # "buy" | "sell" | "close"
+    action: str  # "buy" | "sell" | "close" | "tp" | "sl" | "be"
     symbol: str
     entry: float | None = None
     sl: float | None = None
@@ -56,6 +60,12 @@ def _normalize_action(raw: str) -> str:
         return "sell"
     if w in CLOSE_WORDS:
         return "close"
+    if w in TP_WORDS:
+        return "tp"
+    if w in SL_WORDS:
+        return "sl"
+    if w in BE_WORDS:
+        return "be"
     raise ParseError(f"unknown action: {raw!r}")
 
 
@@ -99,7 +109,7 @@ def _from_text(body: str) -> Signal:
     tokens = re.findall(r"[A-Za-z0-9!:.,]+", text)
     action = symbol = None
     for t in tokens:
-        if action is None and t.lower() in BUY_WORDS | SELL_WORDS | CLOSE_WORDS:
+        if action is None and t.lower() in BUY_WORDS | SELL_WORDS | CLOSE_WORDS | TP_WORDS | SL_WORDS | BE_WORDS:
             action = _normalize_action(t)
         elif symbol is None:
             try:
