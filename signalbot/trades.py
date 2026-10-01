@@ -32,23 +32,34 @@ def open_trade_for(symbol: str) -> dict | None:
     return trade
 
 
+def compute_result(trade: dict, exit_price: float | None) -> dict:
+    """Points, R and outcome for exiting `trade` at `exit_price` (no database access)."""
+    if exit_price is None:
+        return {"exit_price": None, "points": None, "r": None, "outcome": "unknown"}
+    points = exit_price - trade["entry"] if trade["side"] == "buy" else trade["entry"] - exit_price
+    risk = abs(trade["entry"] - trade["sl"]) if trade["sl"] is not None else 0
+    outcome = "win" if points > 1e-9 else "loss" if points < -1e-9 else "be"
+    return {"exit_price": exit_price, "points": points, "r": points / risk if risk else None, "outcome": outcome}
+
+
 def close_trade(trade_id: int, exit_price: float | None) -> dict:
     """Close a trade. With no exit price the trade is closed but excluded from statistics."""
     with db() as c:
         t = dict(c.execute("SELECT * FROM trades WHERE id = ?", (trade_id,)).fetchone())
-        points = r = None
-        outcome = "unknown"
-        if exit_price is not None:
-            points = exit_price - t["entry"] if t["side"] == "buy" else t["entry"] - exit_price
-            risk = abs(t["entry"] - t["sl"]) if t["sl"] is not None else 0
-            r = points / risk if risk else None
-            outcome = "win" if points > 1e-9 else "loss" if points < -1e-9 else "be"
+        res = compute_result(t, exit_price)
         c.execute(
             "UPDATE trades SET closed_ts=?, exit_price=?, points=?, r=?, outcome=? WHERE id=?",
-            (time.time(), exit_price, points, r, outcome, trade_id),
+            (time.time(), res["exit_price"], res["points"], res["r"], res["outcome"], trade_id),
         )
-    t.update(closed_ts=time.time(), exit_price=exit_price, points=points, r=r, outcome=outcome)
+    t.update(res, closed_ts=time.time())
+    t["tps"] = json.loads(t["tps"] or "[]")
     return t
+
+
+def open_trades() -> list[dict]:
+    with db() as c:
+        rows = c.execute("SELECT * FROM trades WHERE closed_ts IS NULL ORDER BY id").fetchall()
+    return [dict(r) for r in rows]
 
 
 def closed_trades(since_ts: float | None = None) -> list[dict]:

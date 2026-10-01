@@ -25,7 +25,7 @@ def env(tmp_path, monkeypatch):
 @pytest.fixture
 def client(monkeypatch):
     sent = []
-    monkeypatch.setattr("signalbot.telegram.send_message", lambda text, chat_ids=None: sent.append(text) or True)
+    monkeypatch.setattr("signalbot.broadcast.send_detailed", lambda text: sent.append(text) or {"telegram": True})
     from signalbot.app import app
 
     c = TestClient(app)
@@ -76,7 +76,7 @@ def test_close_without_price_is_excluded_from_stats(client):
 
 def test_weekly_report_posts_once_per_week(monkeypatch):
     sent = []
-    monkeypatch.setattr("signalbot.telegram.send_message", lambda text, chat_ids=None: sent.append(text) or True)
+    monkeypatch.setattr("signalbot.broadcast.send_detailed", lambda text: sent.append(text) or {"telegram": True})
     t = trades.open_trade(__import__("signalbot.parse", fromlist=["Signal"]).Signal("buy", "US30", 100, 90, [120]))
     trades.close_trade(t, 120)
     thursday = datetime(2026, 9, 24, 12, 0, tzinfo=timezone.utc)

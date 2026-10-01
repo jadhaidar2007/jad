@@ -1,4 +1,4 @@
-"""Webhook receiver: TradingView alert -> parsed signal -> Telegram group, plus paid-membership hooks.
+"""Webhook receiver: TradingView alert -> parsed signal -> Telegram + Discord, plus paid-membership hooks.
 
 Run:
     uvicorn signalbot.app:app --host 0.0.0.0 --port 8080
@@ -22,9 +22,8 @@ from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from starlette.concurrency import run_in_threadpool
 
-from signalbot import config, members, store, telegram, trades
-from signalbot.format import format_result, format_signal
-from signalbot.parse import EXIT_ACTIONS, ParseError, Signal, extract_secret, parse_alert
+from signalbot import config, engine, members
+from signalbot.parse import ParseError, extract_secret, parse_alert
 from signalbot.report import report_loop
 
 logging.basicConfig(level=logging.INFO)
@@ -48,37 +47,6 @@ def health():
 
 
 # --- TradingView -----------------------------------------------------------
-def _exit_price(sig: Signal, trade: dict) -> float | None:
-    if sig.entry is not None:
-        return sig.entry
-    if sig.action == "tp":
-        return trade["tps"][0] if trade["tps"] else None
-    if sig.action == "sl":
-        return trade["sl"]
-    if sig.action == "be":
-        return trade["entry"]
-    return None
-
-
-def track(sig: Signal) -> list[str]:
-    """Update the trade book and return the messages to post, in order."""
-    existing = trades.open_trade_for(sig.symbol)
-    if sig.action in EXIT_ACTIONS:
-        if existing is None:
-            return [format_signal(sig)]
-        return [format_result(trades.close_trade(existing["id"], _exit_price(sig, existing)))]
-
-    msgs = []
-    if existing and existing["side"] != sig.action and sig.entry is not None:
-        # Reversal: the old trade ends where the new one starts.
-        msgs.append(format_result(trades.close_trade(existing["id"], sig.entry)))
-        existing = None
-    if existing is None:
-        trades.open_trade(sig)
-    msgs.append(format_signal(sig))
-    return msgs
-
-
 def process_alert(body: str) -> dict:
     if not config.WEBHOOK_SECRET:
         raise HTTPException(500, "WEBHOOK_SECRET is not configured")
@@ -91,16 +59,13 @@ def process_alert(body: str) -> dict:
         log.warning("rejected alert: %s | body=%r", e, body[:300])
         raise HTTPException(422, str(e))
 
-    if store.is_duplicate(sig):
+    outcome = engine.publish(sig)
+    if outcome.status == "duplicate":
         log.info("duplicate dropped: %s %s", sig.action, sig.symbol)
-        return {"status": "duplicate"}
-
-    delivered = all([telegram.send_message(m) for m in track(sig)])
-    store.log_signal(sig, delivered)
-    if not delivered:
+    elif outcome.status == "failed":
         # 502 makes the failure visible in TradingView's alert log.
-        raise HTTPException(502, "telegram delivery failed")
-    return {"status": "sent"}
+        raise HTTPException(502, f"delivery failed: {outcome.delivery}")
+    return {"status": outcome.status}
 
 
 @app.post("/webhook")

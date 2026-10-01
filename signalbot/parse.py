@@ -28,6 +28,10 @@ BE_WORDS = {"be", "breakeven"}
 EXIT_ACTIONS = {"close", "tp", "sl", "be"}
 
 
+_LABELED = re.compile(r"\b(entry|price|sl|tp[123]?)\s*[=:@]?\s*(-?\d[\d,]*(?:\.\d+)?)", re.I)
+_BARE = re.compile(r"(?<![\w.])-?\d[\d,]*(?:\.\d+)?(?!\w)")
+
+
 class ParseError(ValueError):
     pass
 
@@ -119,12 +123,16 @@ def _from_text(body: str) -> Signal:
     if action is None or symbol is None:
         raise ParseError("could not find action and symbol in alert text")
 
-    def grab(label: str) -> float | None:
-        m = re.search(rf"\b{label}(?!\d)\s*[=:@]?\s*(-?[\d,]+(?:\.\d+)?)", text, re.I)
-        return _num(m.group(1)) if m else None
-
-    tps = [t for t in (grab("tp"), grab("tp1"), grab("tp2"), grab("tp3")) if t is not None]
-    return Signal(action=action, symbol=symbol, entry=grab("entry") or grab("price"), sl=grab("sl"), tps=tps)
+    vals: dict[str, float | None] = {}
+    for m in _LABELED.finditer(text):
+        vals.setdefault(m.group(1).lower(), _num(m.group(2)))
+    entry = vals.get("entry") if vals.get("entry") is not None else vals.get("price")
+    if entry is None:
+        # Shorthand: "buy us30 39000 sl 38900" -> the first unlabeled number is the entry/exit price.
+        bare = _BARE.search(_LABELED.sub(" ", text))
+        entry = _num(bare.group(0)) if bare else None
+    tps = [vals[k] for k in ("tp", "tp1", "tp2", "tp3") if vals.get(k) is not None]
+    return Signal(action=action, symbol=symbol, entry=entry, sl=vals.get("sl"), tps=tps)
 
 
 def parse_alert(body: str) -> Signal:
@@ -138,3 +146,19 @@ def parse_alert(body: str) -> Signal:
     if not isinstance(data, dict):
         raise ParseError("JSON alert must be an object")
     return _from_json(data)
+
+
+def check_levels(sig: Signal) -> list[str]:
+    """Sanity warnings for hand-typed signals (SL/TP on the wrong side of entry)."""
+    if sig.action not in ("buy", "sell"):
+        return []
+    warnings = []
+    if sig.entry is None:
+        return ["no entry price: this trade will not be tracked"]
+    sign = 1 if sig.action == "buy" else -1
+    if sig.sl is not None and sign * (sig.sl - sig.entry) >= 0:
+        warnings.append(f"SL {sig.sl:g} is on the wrong side of entry for a {sig.action}")
+    for i, tp in enumerate(sig.tps, 1):
+        if sign * (tp - sig.entry) <= 0:
+            warnings.append(f"TP{i} {tp:g} is on the wrong side of entry for a {sig.action}")
+    return warnings

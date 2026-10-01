@@ -12,7 +12,7 @@ import csv
 import logging
 from datetime import datetime, timedelta, timezone
 
-from signalbot import config, telegram, trades
+from signalbot import broadcast, config, trades
 from signalbot.db import db
 from signalbot.format import format_report
 
@@ -38,7 +38,7 @@ def maybe_post_weekly(now: datetime) -> bool:
         row = c.execute("SELECT value FROM meta WHERE key = 'last_report_week'").fetchone()
     if (row and row["value"] == week) or not _due(now):
         return False
-    if not telegram.send_message(build_weekly_message(now)):
+    if not broadcast.send(build_weekly_message(now)):
         return False  # retry on the next tick
     with db() as c:
         c.execute("INSERT OR REPLACE INTO meta (key, value) VALUES ('last_report_week', ?)", (week,))
@@ -74,7 +74,7 @@ def main() -> None:
     if args.show or not (args.post or args.csv):
         print(msg)
     if args.post:
-        print("posted" if telegram.send_message(msg) else "FAILED to post")
+        print("posted" if broadcast.send(msg) else "FAILED to post")
     if args.csv:
         print(f"wrote {export_csv(args.csv)} trades to {args.csv}")
 

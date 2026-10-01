@@ -20,6 +20,9 @@ TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 # Chat ids that receive signals: the paid group and (optionally) a free teaser channel.
 TELEGRAM_CHAT_IDS = _list("TELEGRAM_CHAT_IDS")
 
+# Discord channel webhook URLs (Channel settings -> Integrations -> Webhooks). Several allowed.
+DISCORD_WEBHOOK_URLS = _list("DISCORD_WEBHOOK_URLS")
+
 DB_PATH = os.environ.get("SIGNAL_DB_PATH", "signals.db")
 
 # Identical signals inside this window are dropped (TradingView can fire twice).

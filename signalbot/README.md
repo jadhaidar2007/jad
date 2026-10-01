@@ -1,11 +1,12 @@
 # SignalBot
 
-Captures TradingView alerts for **US30, SPX500, US100** and posts them as formatted signals to a Telegram group.
-It tracks every trade's result, posts a weekly performance report, and can sell access automatically through Stripe.
+Posts **US30, SPX500, US100** signals to a Telegram group and/or a Discord server, either from TradingView alerts
+or typed by hand with `python -m signalbot.post`. It tracks every trade's result, posts a weekly performance report, and can sell access automatically through Stripe.
 
 ```
-TradingView ──► /webhook ──► Telegram group ──► results + weekly report
-                   └──► signals.db (signals, trades, members)
+TradingView ──► /webhook ─┐
+                          ├──► engine ──► Telegram + Discord ──► results + weekly report
+you, by hand ─► post CLI ─┘        └──► signals.db (signals, trades, members)
 
 Stripe Checkout ──► /join ──► single-use Telegram invite
 Stripe cancel   ──► /stripe/webhook ──► member removed
@@ -25,6 +26,35 @@ Stripe cancel   ──► /stripe/webhook ──► member removed
    or `docker build -f signalbot/Dockerfile -t signalbot . && docker run --env-file .env -p 8080:8080 -v $PWD/data:/data -e SIGNAL_DB_PATH=/data/signals.db signalbot`
 5. **Host it publicly over HTTPS** (TradingView needs a reachable URL): Railway, Render, Fly.io, or a VPS with Caddy/nginx.
    Webhooks need a paid TradingView plan (Essential or higher) and 2FA enabled.
+
+## Posting by hand (no server needed)
+
+Until you automate, send signals yourself. One command posts to every configured destination, tracks the trade and
+feeds the weekly report:
+
+```
+python -m signalbot.post buy us30 39000 sl 38900 tp 39200
+python -m signalbot.post sell nas100 18500 sl 18550 tp1 18400 tp2 18300 --note "NFP in 1h"
+python -m signalbot.post close us30 39150        # or: tp us30 | sl us30 | be us30
+python -m signalbot.post --open                  # what's still open
+python -m signalbot.post --say "No more trades today"
+```
+
+- The first unlabeled number is the entry (or the exit price for `close`).
+- It shows a preview first, warns if SL/TP are on the wrong side of entry or the entry is missing, and asks `[y/N]`.
+  `-y` skips the question, `--dry-run` previews only and changes nothing, `--force` re-posts an identical signal.
+- If one platform fails you see which (`✓ telegram`, `✗ FAILED discord`) and the signal is still logged with `delivered=0`.
+- You only need the `.env` values for Telegram and/or Discord. The web server, Stripe and TradingView parts are not needed.
+
+## Discord setup
+
+1. Server settings → create a read-only `#signals` channel (and `#results`, `#rules`).
+2. Channel settings → **Integrations → Webhooks → New Webhook → Copy Webhook URL**.
+3. Put it in `DISCORD_WEBHOOK_URLS` (comma-separate several, e.g. paid and free channels). Webhook messages never ping
+   `@everyone` or roles, even if one appears in a note.
+
+Telegram works as before (`TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_IDS`). Set either or both. Every signal, result and the
+weekly report goes to every configured destination. Stripe-gated access is Telegram-only for now, so add Discord members by hand.
 
 ## TradingView alert setup
 

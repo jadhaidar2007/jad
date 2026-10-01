@@ -34,7 +34,7 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "WEBHOOK_SECRET", "s3cret")
     monkeypatch.setattr(config, "DB_PATH", str(tmp_path / "t.db"))
     sent = []
-    monkeypatch.setattr("signalbot.telegram.send_message", lambda text: sent.append(text) or True)
+    monkeypatch.setattr("signalbot.broadcast.send_detailed", lambda text: sent.append(text) or {"telegram": True})
     from signalbot.app import app
     c = TestClient(app)
     c.sent = sent

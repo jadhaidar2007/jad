@@ -1,7 +1,8 @@
 """Render signals, trade results and reports as the Telegram messages members see."""
 from __future__ import annotations
 
-from html import escape
+import re
+from html import escape, unescape
 
 from signalbot.parse import Signal
 
@@ -69,3 +70,12 @@ def format_report(title: str, period: dict, all_time: dict) -> str:
         wr = f", {all_time['win_rate']:.0%} win rate" if all_time["win_rate"] is not None else ""
         lines.append(f"\nAll-time: {all_time['n']} trades{wr}, {_pts(all_time['points'])} pts")
     return "\n".join(lines)
+
+
+def to_discord(text: str) -> str:
+    """Telegram-HTML message -> Discord markdown."""
+    return unescape(re.sub(r"</?b>", "**", text))
+
+
+def to_plain(text: str) -> str:
+    return unescape(re.sub(r"</?b>", "", text))
