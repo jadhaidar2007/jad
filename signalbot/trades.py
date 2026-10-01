@@ -62,6 +62,12 @@ def open_trades() -> list[dict]:
     return [dict(r) for r in rows]
 
 
+def drop_open_trade(symbol: str) -> bool:
+    """Forget a mistyped open trade (it never counts toward statistics)."""
+    with db() as c:
+        return c.execute("DELETE FROM trades WHERE symbol = ? AND closed_ts IS NULL", (symbol,)).rowcount > 0
+
+
 def closed_trades(since_ts: float | None = None) -> list[dict]:
     with db() as c:
         rows = c.execute(

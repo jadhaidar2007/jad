@@ -7,7 +7,7 @@ Endpoints
     POST /webhook           TradingView alerts
     GET  /join              Stripe success page: hands out the Telegram invite
     POST /stripe/webhook    Stripe subscription events
-    POST /telegram/webhook  Telegram chat_member updates
+    POST /telegram/webhook  Telegram updates (admin commands, member joins)
 """
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from starlette.concurrency import run_in_threadpool
 
-from signalbot import config, engine, members
+from signalbot import bot, config, engine, members
 from signalbot.parse import ParseError, extract_secret, parse_alert
 from signalbot.report import report_loop
 
@@ -108,5 +108,5 @@ async def telegram_webhook(request: Request, x_telegram_bot_api_secret_token: st
         x_telegram_bot_api_secret_token.encode(), config.TELEGRAM_WEBHOOK_SECRET.encode()
     ):
         raise HTTPException(401, "bad secret")
-    await run_in_threadpool(members.handle_telegram_update, await request.json())
+    await run_in_threadpool(bot.handle_update, await request.json())
     return {"ok": True}

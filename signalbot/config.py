@@ -28,6 +28,10 @@ DB_PATH = os.environ.get("SIGNAL_DB_PATH", "signals.db")
 # Identical signals inside this window are dropped (TradingView can fire twice).
 DEDUPE_SECONDS = int(os.environ.get("DEDUPE_SECONDS", "60"))
 
+# --- Telegram admin bot (post signals from your phone) ---------------------
+# Numeric Telegram user ids allowed to post. DM the bot /id to find yours.
+ADMIN_TELEGRAM_IDS = _list("ADMIN_TELEGRAM_IDS")
+
 # --- Weekly report ---------------------------------------------------------
 WEEKLY_REPORT = os.environ.get("WEEKLY_REPORT", "1") == "1"
 REPORT_WEEKDAY = int(os.environ.get("REPORT_WEEKDAY", "4"))  # 0=Mon ... 4=Fri

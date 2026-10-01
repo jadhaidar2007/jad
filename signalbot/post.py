@@ -4,6 +4,7 @@
     python -m signalbot.post sell nas100 18500 sl 18550 tp1 18400 tp2 18300
     python -m signalbot.post close us30 39150      # exit at 39150 (or: tp us30 / sl us30 / be us30)
     python -m signalbot.post --open                # trades still open
+    python -m signalbot.post --drop us30           # forget a mistyped open trade
     python -m signalbot.post --say "No more trades today"
 
 It shows a preview and asks before posting. Add -y to skip the question, --dry-run to only preview.
@@ -17,7 +18,7 @@ from html import escape
 
 from signalbot import broadcast, config, engine, trades
 from signalbot.format import to_plain
-from signalbot.parse import ParseError, check_levels, parse_alert
+from signalbot.parse import ParseError, check_levels, normalize_symbol, parse_alert
 
 
 def _confirm(question: str, input_fn) -> bool:
@@ -41,11 +42,21 @@ def main(argv: list[str] | None = None, input_fn=input) -> int:
     ap.add_argument("--dry-run", action="store_true", help="preview only, change nothing")
     ap.add_argument("--force", action="store_true", help="post even if an identical signal was just sent")
     ap.add_argument("--open", action="store_true", dest="list_open", help="list open trades")
+    ap.add_argument("--drop", metavar="SYMBOL", help="forget a mistyped open trade (members are not told)")
     ap.add_argument("--say", metavar="TEXT", help="post a plain announcement")
     args = ap.parse_args(argv)
 
     if args.list_open:
         _show_open()
+        return 0
+
+    if args.drop:
+        try:
+            symbol = normalize_symbol(args.drop)
+        except ParseError as e:
+            print(e)
+            return 2
+        print(f"Dropped open {symbol} trade." if trades.drop_open_trade(symbol) else f"No open {symbol} trade.")
         return 0
 
     dests = broadcast.destinations()

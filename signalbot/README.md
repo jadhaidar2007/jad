@@ -1,7 +1,7 @@
 # SignalBot
 
 Posts **US30, SPX500, US100** signals to a Telegram group and/or a Discord server, either from TradingView alerts
-or typed by hand with `python -m signalbot.post`. It tracks every trade's result, posts a weekly performance report, and can sell access automatically through Stripe.
+or typed by hand, from a terminal (`python -m signalbot.post`) or from your phone (Telegram bot). It tracks every trade's result, posts a weekly performance report, and can sell access automatically through Stripe.
 
 ```
 TradingView ──► /webhook ─┐
@@ -45,6 +45,34 @@ python -m signalbot.post --say "No more trades today"
   `-y` skips the question, `--dry-run` previews only and changes nothing, `--force` re-posts an identical signal.
 - If one platform fails you see which (`✓ telegram`, `✗ FAILED discord`) and the signal is still logged with `delivered=0`.
 - You only need the `.env` values for Telegram and/or Discord. The web server, Stripe and TradingView parts are not needed.
+
+## Posting from your phone (Telegram bot)
+
+DM your bot and it posts for you, after you confirm:
+
+```
+you:  buy us30 39000 sl 38900 tp 39200 | NFP in 1h
+bot:  🟢 BUY US30 ... Post to telegram + discord?   [✅ Post] [❌ Cancel]
+```
+
+Commands: plain text signals as above, `close us30 39150` (also `tp` / `sl` / `be`), `/open`, `/stats`, `/say text`,
+`/drop us30`, `/id`, `/help`.
+
+Setup:
+1. DM the bot `/id` (it answers anyone) and put the number in `ADMIN_TELEGRAM_IDS`. Anyone else is ignored without a reply.
+2. Run it: `python -m signalbot.bot`. It long-polls Telegram, so **no server or public URL is needed**; a laptop or a cheap
+   VPS is enough. It also posts the weekly report. (If you earlier registered a webhook with `setup_telegram`, add
+   `--delete-webhook`: Telegram allows polling or a webhook, not both.)
+   - *Or*, if you deploy the web server, run `python -m signalbot.setup_telegram https://<host>` once instead, and the
+     server handles bot messages and member joins through the webhook.
+
+Safety:
+- Only your DMs count. Messages in groups are never acted on, and buttons only work for the admin who got the preview.
+- Nothing is posted until you tap ✅. Each preview works **once** and expires after 10 minutes, so a double tap or an
+  old preview can't post twice or at a stale price.
+- An identical signal within 60s asks "Post anyway?". `/drop` removes a mistyped *open trade* from the book; it can't
+  unsend a message already posted.
+- Anyone who gets your bot token can act as the bot, so keep `.env` private and revoke the token in @BotFather if it leaks.
 
 ## Discord setup
 

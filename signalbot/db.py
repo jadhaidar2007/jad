@@ -42,6 +42,15 @@ CREATE TABLE IF NOT EXISTS members (
     joined_ts REAL,
     revoked_ts REAL
 );
+CREATE TABLE IF NOT EXISTS pending (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    admin_id TEXT NOT NULL,
+    kind TEXT NOT NULL,  -- signal | say
+    text TEXT NOT NULL,
+    note TEXT NOT NULL DEFAULT '',
+    created_ts REAL NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending'  -- pending | done | cancelled | expired
+);
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 """
 
