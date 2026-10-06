@@ -5,3 +5,4 @@ workdir/
 secrets/
 *.egg-info/
 .venv/
+earnings.db
