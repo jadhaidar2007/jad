@@ -54,6 +54,10 @@ PUBLIC_CLIP_BASE_URL = os.getenv("PUBLIC_CLIP_BASE_URL", "")
 # Redis-backed job queue
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+# Scheduled posting: slots are local times in POST_TIMEZONE (default US Eastern evening)
+POST_TIMEZONE = os.getenv("POST_TIMEZONE", "America/New_York")
+POST_SLOTS = os.getenv("POST_SLOTS", "18:00,19:30,21:00")
+
 ENABLED_PLATFORMS = [
     p.strip()
     for p in os.getenv("ENABLED_PLATFORMS", "tiktok,instagram").split(",")

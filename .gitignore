@@ -7,3 +7,4 @@ secrets/
 .venv/
 earnings.db
 rulebook.txt
+schedule.db

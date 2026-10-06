@@ -9,7 +9,7 @@ import logging
 import time
 from dataclasses import dataclass, field
 
-from clipengine import config
+from clipengine import config, scheduling
 from clipengine.edit.clipper import render_clip
 from clipengine.ingest.download import download_video
 from clipengine.rules import parse_rulebook
@@ -25,6 +25,7 @@ class ClipResult:
     title: str
     file_path: str
     posted_to: list[str] = field(default_factory=list)
+    scheduled_for: str | None = None
     errors: dict[str, str] = field(default_factory=dict)
 
 
@@ -37,7 +38,7 @@ class PipelineResult:
 
 
 def run_pipeline(
-    youtube_url: str, rulebook: str | None = None, dry_run: bool = False
+    youtube_url: str, rulebook: str | None = None, dry_run: bool = False, schedule: bool = False
 ) -> PipelineResult:
     t0 = time.monotonic()
     rules = parse_rulebook(rulebook)
@@ -73,8 +74,10 @@ def run_pipeline(
         caption = f"{pick.hook}\n\n{pick.title}\n\n{suffix}".strip()
         if dry_run:
             logger.info("dry_run: skipping upload. Caption would be:\n%s", caption)
+        elif schedule:
+            result.scheduled_for = scheduling.enqueue(str(rendered.file_path), title, caption).isoformat()
         else:
-            _post_everywhere(rendered.file_path, title, caption, result)
+            post_everywhere(rendered.file_path, title, caption, result)
         results.append(result)
 
     elapsed = time.monotonic() - t0
@@ -82,7 +85,7 @@ def run_pipeline(
     return PipelineResult(source.video_id, source.title, results, elapsed)
 
 
-def _post_everywhere(file_path, title: str, caption: str, result: ClipResult) -> None:
+def post_everywhere(file_path, title: str, caption: str, result: ClipResult) -> None:
     # TikTok uploads the local file directly (FILE_UPLOAD) — no public
     # storage needed. Only Instagram's Graph API requires a public URL.
     public_url_ready = False
