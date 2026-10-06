@@ -29,6 +29,9 @@ MAX_CLIPS_PER_VIDEO = int(os.getenv("MAX_CLIPS_PER_VIDEO", "10"))
 MIN_CLIP_SECONDS = int(os.getenv("MIN_CLIP_SECONDS", "25"))
 MAX_CLIP_SECONDS = int(os.getenv("MAX_CLIP_SECONDS", "60"))
 OUTPUT_ASPECT = os.getenv("OUTPUT_ASPECT", "9:16")
+# Video encoder: auto = Apple hardware encoder on a Mac (cool, fast), libx264 elsewhere
+VIDEO_ENCODER = os.getenv("VIDEO_ENCODER", "auto").lower()  # auto | videotoolbox | libx264
+FFMPEG_THREADS = int(os.getenv("FFMPEG_THREADS", "4"))
 # Alternate wide / punched-in framing every 3-5s (viral-clip pacing)
 PACING_ENABLED = os.getenv("PACING_ENABLED", "true").lower() == "true"
 PACING_ZOOM = float(os.getenv("PACING_ZOOM", "0.12"))

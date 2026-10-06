@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import platform
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -64,21 +65,43 @@ def render_clip(
     else:
         vf = f"ass={_ffmpeg_escape(str(ass_path))}"
 
-    cmd = [
-        "ffmpeg", "-y",
-        "-ss", f"{pick.start:.2f}",
-        "-i", str(source_video),
-        "-t", f"{duration:.2f}",
-        "-vf", vf,
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
-        "-c:a", "aac", "-b:a", "160k",
-        str(out_path),
-    ]
+    encoders = ["h264_videotoolbox", "libx264"] if _use_hardware_encoder() else ["libx264"]
     logger.info("Rendering clip %s (%.1fs-%.1fs)", out_path.name, pick.start, pick.end)
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode != 0:
-        raise RuntimeError(f"ffmpeg failed for {out_path.name}: {proc.stderr[-800:]}")
+    for i, encoder in enumerate(encoders):
+        cmd = [
+            "ffmpeg", "-y", "-threads", str(config.FFMPEG_THREADS),
+            "-ss", f"{pick.start:.2f}",
+            "-i", str(source_video),
+            "-t", f"{duration:.2f}",
+            "-vf", vf,
+            *_encoder_args(encoder),
+            "-pix_fmt", "yuv420p",
+            "-c:a", "aac", "-b:a", "160k",
+            str(out_path),
+        ]
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode == 0:
+            break
+        if i + 1 < len(encoders):
+            logger.warning("%s failed, retrying with %s: %s", encoder, encoders[i + 1], proc.stderr[-300:])
+        else:
+            raise RuntimeError(f"ffmpeg failed for {out_path.name}: {proc.stderr[-800:]}")
     return RenderedClip(pick=pick, file_path=out_path)
+
+
+def _use_hardware_encoder() -> bool:
+    mode = config.VIDEO_ENCODER
+    if mode == "videotoolbox":
+        return True
+    if mode == "libx264":
+        return False
+    return platform.system() == "Darwin"
+
+
+def _encoder_args(encoder: str) -> list[str]:
+    if encoder == "h264_videotoolbox":
+        return ["-c:v", "h264_videotoolbox", "-b:v", "10M"]
+    return ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20"]
 
 
 def _ffmpeg_escape(path: str) -> str:
