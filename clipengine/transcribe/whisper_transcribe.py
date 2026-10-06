@@ -22,6 +22,7 @@ def _get_model() -> WhisperModel:
             config.WHISPER_MODEL_SIZE,
             device=config.WHISPER_DEVICE,
             compute_type=config.WHISPER_COMPUTE_TYPE,
+            cpu_threads=config.WHISPER_THREADS,
         )
     return _model
 

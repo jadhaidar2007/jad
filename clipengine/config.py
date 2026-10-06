@@ -19,6 +19,8 @@ LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "small")
 WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")  # "cuda" if you have a GPU
 WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
+# CPU threads for transcription. 0 = use every core (fast, hot). 4 keeps a laptop cool.
+WHISPER_THREADS = int(os.getenv("WHISPER_THREADS", "4"))
 
 # Clip generation
 MAX_CLIPS_PER_VIDEO = int(os.getenv("MAX_CLIPS_PER_VIDEO", "10"))
