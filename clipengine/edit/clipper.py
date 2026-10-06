@@ -7,39 +7,17 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from clipengine import config
+from clipengine.edit.captions import build_caption_ass
 from clipengine.edit.pacing import compute_cut_times, zoom_filter
 from clipengine.select.select_clips import ClipPick
 from clipengine.transcribe.whisper_transcribe import Transcript, Word
 
 logger = logging.getLogger(__name__)
 
-ASS_HEADER = """[Script Info]
-ScriptType: v4.00+
-PlayResX: 1080
-PlayResY: 1920
-ScaledBorderAndShadow: yes
-
-[V4+ Styles]
-Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Caption,Arial Black,72,&H00FFFFFF,&H000000FF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,6,0,2,60,60,220,1
-
-[Events]
-Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-"""
-
-
 @dataclass
 class RenderedClip:
     pick: ClipPick
     file_path: Path
-
-
-def _ass_timestamp(seconds: float) -> str:
-    seconds = max(0.0, seconds)
-    h = int(seconds // 3600)
-    m = int((seconds % 3600) // 60)
-    s = seconds % 60
-    return f"{h:d}:{m:02d}:{s:05.2f}"
 
 
 def _words_in_range(transcript: Transcript, start: float, end: float) -> list[Word]:
@@ -51,39 +29,6 @@ def _words_in_range(transcript: Transcript, start: float, end: float) -> list[Wo
             if start <= w.start <= end:
                 words.append(w)
     return words
-
-
-def _build_caption_ass(transcript: Transcript, pick: ClipPick, ass_path: Path) -> None:
-    """Word-by-word 'karaoke' style captions, timestamps re-based to clip start."""
-    words = _words_in_range(transcript, pick.start, pick.end)
-    lines = [ASS_HEADER]
-
-    if pick.hook:
-        lines.append(
-            f"Dialogue: 0,{_ass_timestamp(0)},{_ass_timestamp(min(2.5, pick.end - pick.start))},"
-            f"Caption,,0,0,0,,{{\\b1}}{pick.hook.upper()}"
-        )
-
-    group: list[Word] = []
-    GROUP_SIZE = 3
-    for w in words:
-        group.append(w)
-        if len(group) >= GROUP_SIZE:
-            _flush_group(lines, group, pick.start)
-            group = []
-    if group:
-        _flush_group(lines, group, pick.start)
-
-    ass_path.write_text("\n".join(lines))
-
-
-def _flush_group(lines: list[str], group: list[Word], clip_start: float) -> None:
-    text = " ".join(w.text.strip() for w in group).upper()
-    start = group[0].start - clip_start
-    end = group[-1].end - clip_start
-    lines.append(
-        f"Dialogue: 0,{_ass_timestamp(start)},{_ass_timestamp(end)},Caption,,0,0,0,,{text}"
-    )
 
 
 def render_clip(
@@ -99,7 +44,9 @@ def render_clip(
     out_path = out_dir / f"{pick.start:.0f}_{slug}.mp4"
     ass_path = out_dir / f"{pick.start:.0f}_{slug}.ass"
 
-    _build_caption_ass(transcript, pick, ass_path)
+    build_caption_ass(
+        _words_in_range(transcript, pick.start, pick.end), pick.hook, pick.start, pick.end - pick.start, ass_path
+    )
 
     # 9:16 crop-to-fill: scale so the shorter dimension covers the target,
     # crop the rest centered. Assumes 16:9 or similar landscape source.
