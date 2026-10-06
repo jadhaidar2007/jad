@@ -15,7 +15,9 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 DEEPSEEK_BASE_URL = os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com")
 LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
 
-# Whisper transcription
+# Whisper transcription. Backend: auto | mlx (Apple Silicon GPU) | faster (CPU)
+WHISPER_BACKEND = os.getenv("WHISPER_BACKEND", "auto").lower()
+WHISPER_MLX_MODEL = os.getenv("WHISPER_MLX_MODEL", "")  # full repo id; default derived from WHISPER_MODEL_SIZE
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "small")
 WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")  # "cuda" if you have a GPU
 WHISPER_COMPUTE_TYPE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
