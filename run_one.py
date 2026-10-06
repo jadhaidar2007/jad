@@ -12,6 +12,7 @@ import argparse
 import logging
 import shutil
 import sys
+from pathlib import Path
 
 from clipengine import config
 
@@ -38,6 +39,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("url")
     ap.add_argument("rulebook", nargs="?", default=None, help="creator's do/don't rules, as text")
+    ap.add_argument("--rulebook-file", help="read the rulebook from a file (e.g. from analyze_campaign.py)")
     ap.add_argument("--post", action="store_true", help="actually upload (default is dry run)")
     args = ap.parse_args()
 
@@ -50,7 +52,8 @@ def main() -> int:
 
     from clipengine.pipeline import run_pipeline  # imported late so preflight runs without heavy deps
 
-    result = run_pipeline(args.url, rulebook=args.rulebook, dry_run=not args.post)
+    rulebook = Path(args.rulebook_file).read_text() if args.rulebook_file else args.rulebook
+    result = run_pipeline(args.url, rulebook=rulebook, dry_run=not args.post)
 
     print(f"\n{result.video_title}: {len(result.clips)} clips in {result.elapsed_seconds:.0f}s")
     for c in result.clips:

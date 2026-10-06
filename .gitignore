@@ -6,3 +6,4 @@ secrets/
 *.egg-info/
 .venv/
 earnings.db
+rulebook.txt
