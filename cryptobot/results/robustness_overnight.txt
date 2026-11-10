@@ -1,0 +1,15 @@
+== Other coins, never used for tuning (after 200-day warm-up)
+ETH hold   2018-05-28..2023-04-09 CAGR   29.8% maxDD  86% Sharpe 0.75
+ETH winner 2018-05-28..2023-04-09 CAGR   36.7% maxDD  26% Sharpe 1.24
+BNB hold   2018-05-28..2023-04-09 CAGR   95.4% maxDD  76% Sharpe 1.16
+BNB winner 2018-05-28..2023-04-09 CAGR   33.8% maxDD  32% Sharpe 1.10
+XRP hold   2018-05-28..2023-04-09 CAGR   -1.9% maxDD  83% Sharpe 0.51
+XRP winner 2018-05-28..2023-04-09 CAGR    7.4% maxDD  35% Sharpe 0.39
+SOL hold   2020-10-27..2023-04-09 CAGR  174.1% maxDD  96% Sharpe 1.42
+SOL winner 2020-10-27..2023-04-09 CAGR   51.8% maxDD  29% Sharpe 1.71
+
+== BTC: 300 random 2-year windows 2015-2026
+winner lost money: 6% of windows (hold: 16%)
+winner beat hold on return: 38%; on drawdown: 100%; on return/drawdown: 64%
+worst 2y result: winner -22% (dd max 31%) | hold -65% (dd max 83%)
+median 2y return: winner 132% | hold 200%
