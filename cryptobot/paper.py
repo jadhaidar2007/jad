@@ -89,10 +89,11 @@ def fetch_live(exchange: str, symbol: str, limit: int = 400) -> pd.DataFrame:
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--strategy", default="sma_trend", choices=list(STRATEGIES))
-    ap.add_argument("--params", default='{"n": 100}', help="JSON params for the strategy")
-    ap.add_argument("--risk", default="moderate", choices=["strict", "moderate"],
-                    help="strict = prompt's 2%%/15%% rules; moderate = 5%% per trade, 25%% kill switch")
+    ap.add_argument("--strategy", default="voltarget_ensemble", choices=list(STRATEGIES))
+    ap.add_argument("--params", default='{"target_vol": 0.4, "vol_window": 60}', help="JSON params for the strategy")
+    ap.add_argument("--risk", default="best", choices=["best", "strict", "moderate"],
+                    help="best = vol-target sizing, 10%% rebalance band, 35%% kill switch (research winner); "
+                         "strict = prompt's 2%%/15%% rules; moderate = 5%% per trade, 25%% kill switch")
     ap.add_argument("--state-dir", default=str(DEFAULT_STATE))
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--replay")
@@ -103,7 +104,9 @@ def main(argv=None):
     ap.add_argument("--poll-minutes", type=int, default=30)
     a = ap.parse_args(argv)
 
-    cfg = RiskConfig() if a.risk == "strict" else RiskConfig(risk_per_trade=0.05, kill_drawdown=0.25)
+    cfg = {"best": RiskConfig(use_risk_sizing=False, use_stop=False, min_trade=0.10, kill_drawdown=0.35),
+           "strict": RiskConfig(),
+           "moderate": RiskConfig(risk_per_trade=0.05, kill_drawdown=0.25)}[a.risk]
     pt = PaperTrader(a.strategy, json.loads(a.params), cfg, Path(a.state_dir), live=a.live)
     if a.replay:
         df = load(a.replay)

@@ -34,12 +34,14 @@ def load(path) -> pd.DataFrame:
 def run(df: pd.DataFrame, target: pd.Series, cfg: RiskConfig, start: int, end: int):
     """Simulate candles [start, end). target[t-1] is traded at the open of t."""
     eng = Engine(cfg, State())
+    o, h, l, c = (df[k].to_numpy() for k in ("open", "high", "low", "close"))
+    tg = np.nan_to_num(target.to_numpy(dtype=float))
+    atr = np.nan_to_num(df.atr.to_numpy())
+    dates = df.date.dt.date.to_numpy()
     rows = []
     for i in range(start, end):
-        r = df.iloc[i]
-        tgt = float(target.iloc[i - 1]) if i > 0 and not np.isnan(target.iloc[i - 1]) else 0.0
-        atr = float(df.atr.iloc[i - 1]) if i > 0 and not np.isnan(df.atr.iloc[i - 1]) else 0.0
-        rows.append(eng.step(i, r.date.date(), r.open, r.high, r.low, r.close, tgt, atr))
+        j = i - 1 if i > 0 else 0
+        rows.append(eng.step(i, dates[i], o[i], h[i], l[i], c[i], tg[j] if i > 0 else 0.0, atr[j] if i > 0 else 0.0))
     return pd.DataFrame(rows).set_index("date"), eng.s.trades
 
 

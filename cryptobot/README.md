@@ -21,7 +21,22 @@ python -m cryptobot.paper --live --exchange binance --symbol BTC/USDT   # needs 
 | `data/BTC-USD_1d.csv` | daily BTC/USD 2014-09-17 to 2026-11-07 (Yahoo-sourced public data) |
 | `results/` | report tables, JSON, and equity curves |
 
-## Results: out-of-sample 2018-01-01 to 2026-11-07, $10k start
+## Current best: `voltarget_ensemble` (target vol 40%, 60-day window, no leverage, 10% rebalance band)
+`python -m cryptobot.research` searches 139 setups. A setup passes only if its worst drop stays at or under 40% in every period.
+
+| | Buy & hold BTC | **Best setup** | Best, fees x3 |
+|---|---|---|---|
+| 2018-2026 CAGR | 21% | **29%** | 27% |
+| $10k becomes | $55k | **$93k** | $81k |
+| Max drawdown | 82% | **31%** | 32% |
+| Chance of a 50% drawdown in 5 yrs (bootstrap) | 96% | **4%** | 5% |
+| Unseen 2015-2017 (not used to pick) | +397%/yr, DD 36% | +126%/yr, DD 27% | |
+
+How it works: 9 trend signals vote on how much to hold. That share is then scaled down when volatility runs above 40% a year. On average it holds 37% BTC and the rest in cash.
+
+Settings near the winner (target vol 30-50%, 20-60 day window) all earned 20-31% a year, so the result doesn't depend on one lucky setting. Rejected: leverage (+2-3%/yr for more risk), stops (hurt returns), and re-picking the best strategy every year (59% drawdown).
+
+## Earlier results: out-of-sample 2018-01-01 to 2026-11-07, $10k start
 Costs are 0.10% fee + 0.05% slippage per side. Buy-and-hold BTC returned **+455%** (21%/yr), with an **82% max drawdown**.
 
 | strategy | risk setting | total | CAGR | Sharpe | max DD | avg exposure |

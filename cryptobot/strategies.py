@@ -63,6 +63,21 @@ def voltarget_trend(df, p):
     return (base * (p["target_vol"] / vol).clip(upper=1.0)).fillna(0.0)
 
 
+def trend_ensemble(df, p=None):
+    """Average of 9 trend signals across speeds: fraction of them that are long (0..1)."""
+    sigs = [sma_trend(df, {"n": n}) for n in (50, 100, 200)]
+    sigs += [donchian(df, {"entry": e, "exit": x}) for e, x in ((20, 10), (55, 20), (100, 50))]
+    sigs += [tsmom(df, {"lookback": n}) for n in (30, 90, 180)]
+    return sum(sigs) / len(sigs)
+
+
+def voltarget_ensemble(df, p):
+    """Trend ensemble scaled to a volatility target; can exceed 1 (leverage) when vol is low."""
+    vol = np.log(df.close).diff().rolling(p.get("vol_window", 30)).std() * np.sqrt(365)
+    scale = (p["target_vol"] / vol).clip(upper=p.get("max_lev", 1.0))
+    return (trend_ensemble(df) * scale).fillna(0.0)
+
+
 STRATEGIES = {
     "buy_hold": (buy_hold, [{}]),
     "sma_trend": (sma_trend, [{"n": n} for n in (50, 100, 150, 200)]),
@@ -70,5 +85,7 @@ STRATEGIES = {
     "donchian": (donchian, [{"entry": e, "exit": x} for e, x in ((20, 10), (55, 20), (100, 50))]),
     "tsmom": (tsmom, [{"lookback": n} for n in (30, 60, 90, 180)]),
     "rsi_meanrev": (rsi_meanrev, [{"n": n, "buy": b, "sell": 60} for n in (2, 4) for b in (10, 20)]),
+    "trend_ensemble": (trend_ensemble, [{}]),
+    "voltarget_ensemble": (voltarget_ensemble, [{"target_vol": v} for v in (0.4, 0.6, 0.8)]),
     "voltarget_trend": (voltarget_trend, [{"n": n, "target_vol": v} for n in (50, 100, 200) for v in (0.4, 0.6)]),
 }

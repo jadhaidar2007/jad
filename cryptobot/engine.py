@@ -23,7 +23,13 @@ class RiskConfig:
     kill_drawdown: float = 0.15    # halt trading at this drawdown from peak
     kill_cooldown_days: int = 30   # backtest only; live needs a manual reset
     min_trade: float = 0.02        # ignore rebalances smaller than this share of equity
-    use_risk_sizing: bool = True
+    use_risk_sizing: bool = True   # size so a stop-out loses at most risk_per_trade
+    use_stop: bool | None = None   # ATR trailing stop; defaults to use_risk_sizing
+    borrow_rate: float = 0.10      # yearly interest on borrowed cash when exposure > 1
+
+    def __post_init__(self):
+        if self.use_stop is None:
+            self.use_stop = self.use_risk_sizing
 
 
 @dataclass
@@ -67,6 +73,10 @@ class Engine:
         if target <= 0:
             s.wait_for_reset = False
 
+        # 0. interest on borrowed cash (leverage)
+        if s.cash < 0:
+            s.cash *= 1 + cfg.borrow_rate / 365
+
         # 1. rebalance at the open
         eq = self.equity(o)
         want = 0.0 if (halted or s.wait_for_reset) else min(max(target, 0.0), cfg.max_exposure)
@@ -77,7 +87,7 @@ class Engine:
         if abs(delta_val) > cfg.min_trade * eq or (want == 0 and s.units > 0):
             units_delta = -s.units if want == 0 else delta_val / o
             self._trade(i, date, o, units_delta, "halted" if halted else "signal")
-        if s.units > 0 and cfg.use_risk_sizing and atr > 0:
+        if s.units > 0 and cfg.use_stop and atr > 0:
             new_stop = o - cfg.stop_atr_mult * atr
             s.stop = new_stop if s.stop is None else max(s.stop, new_stop)  # trailing, never loosens
         elif s.units <= 0:
