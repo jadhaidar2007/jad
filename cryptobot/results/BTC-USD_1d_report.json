@@ -1,0 +1,1433 @@
+{
+  "period": "2018-01-01 to 2026-11-07",
+  "results": [
+    {
+      "total_return": 4.55340750784436,
+      "cagr": 0.2135549881528509,
+      "sharpe": 0.6262254341118636,
+      "sortino": 0.8377680685476485,
+      "max_drawdown": 0.8163133466108656,
+      "calmar": 0.2616090855790601,
+      "trades": 1,
+      "fees_paid": 10.005,
+      "strategy": "buy_hold",
+      "variant": "benchmark",
+      "avg_exposure": 1.001296246448569,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {}
+        },
+        {
+          "year": 2019,
+          "params": {}
+        },
+        {
+          "year": 2020,
+          "params": {}
+        },
+        {
+          "year": 2021,
+          "params": {}
+        },
+        {
+          "year": 2022,
+          "params": {}
+        },
+        {
+          "year": 2023,
+          "params": {}
+        },
+        {
+          "year": 2024,
+          "params": {}
+        },
+        {
+          "year": 2025,
+          "params": {}
+        },
+        {
+          "year": 2026,
+          "params": {}
+        }
+      ]
+    },
+    {
+      "total_return": 0.5483819277687603,
+      "cagr": 0.05059880387047144,
+      "sharpe": 0.7641430273588344,
+      "sortino": 0.7430644710690825,
+      "max_drawdown": 0.10248995812454498,
+      "calmar": 0.4936952341124404,
+      "trades": 367,
+      "fees_paid": 573.98508446742,
+      "strategy": "sma_trend",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.0759224202284187,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 100
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 100
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.7000326891470285,
+      "cagr": 0.06174009889717258,
+      "sharpe": 0.9265358031036767,
+      "sortino": 0.8360490440601456,
+      "max_drawdown": 0.11984277471022164,
+      "calmar": 0.5151758130305258,
+      "trades": 249,
+      "fees_paid": 354.8041753765198,
+      "strategy": "dual_ma",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.06194653386987424,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.7690260423888784,
+      "cagr": 0.06651939435872989,
+      "sharpe": 0.9088707345753324,
+      "sortino": 0.8576362226568486,
+      "max_drawdown": 0.0983603726397102,
+      "calmar": 0.6762824557648592,
+      "trades": 265,
+      "fees_paid": 435.76549663986617,
+      "strategy": "donchian",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.06638581173583895,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "entry": 55,
+            "exit": 20
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.42344705130251126,
+      "cagr": 0.04066743428127939,
+      "sharpe": 0.5919564734204087,
+      "sortino": 0.5667539662674582,
+      "max_drawdown": 0.12746608676402027,
+      "calmar": 0.31904513046334887,
+      "trades": 403,
+      "fees_paid": 676.2367391045061,
+      "strategy": "tsmom",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.07023061004394343,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "lookback": 90
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "lookback": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.00996741195011519,
+      "cagr": 0.001120359179106023,
+      "sharpe": 0.06254964880626336,
+      "sortino": 0.017284646796870373,
+      "max_drawdown": 0.09225765638532912,
+      "calmar": 0.012143807061678008,
+      "trades": 94,
+      "fees_paid": 188.2503982265942,
+      "strategy": "rsi_meanrev",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.00869312558066231,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.5483819277687603,
+      "cagr": 0.05059880387047144,
+      "sharpe": 0.7641430273588344,
+      "sortino": 0.7430644710690825,
+      "max_drawdown": 0.10248995812454498,
+      "calmar": 0.4936952341124404,
+      "trades": 367,
+      "fees_paid": 573.98508446742,
+      "strategy": "voltarget_trend",
+      "variant": "risk_layer_on",
+      "avg_exposure": 0.0759224202284187,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 100,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 100,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 1.3939591997351695,
+      "cagr": 0.1035743862681926,
+      "sharpe": 0.6857353039947466,
+      "sortino": 0.6463401436756748,
+      "max_drawdown": 0.2483690998852055,
+      "calmar": 0.4170180039145931,
+      "trades": 583,
+      "fees_paid": 1709.6495233262094,
+      "strategy": "sma_trend",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.1865178736790757,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 100
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 100
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 2.0745936249106904,
+      "cagr": 0.13519474974503942,
+      "sharpe": 0.8672351079360593,
+      "sortino": 0.7499845484473033,
+      "max_drawdown": 0.28153670453687063,
+      "calmar": 0.48020292759850086,
+      "trades": 450,
+      "fees_paid": 1275.5215876302677,
+      "strategy": "dual_ma",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.15286076074012403,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 2.248039741335774,
+      "cagr": 0.14224994714268835,
+      "sharpe": 0.8626269389987112,
+      "sortino": 0.7602354355533899,
+      "max_drawdown": 0.22646940011976824,
+      "calmar": 0.628119944979143,
+      "trades": 439,
+      "fees_paid": 1555.9417257949895,
+      "strategy": "donchian",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.15098790502496334,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "entry": 55,
+            "exit": 20
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "entry": 55,
+            "exit": 20
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 0.3478388784912143,
+      "cagr": 0.034274695330237526,
+      "sharpe": 0.29090313723540673,
+      "sortino": 0.24529737088287218,
+      "max_drawdown": 0.3116406725303996,
+      "calmar": 0.10998145733655523,
+      "trades": 492,
+      "fees_paid": 1267.1393713716895,
+      "strategy": "tsmom",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.1400330179459521,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "lookback": 90
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "lookback": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": -0.08908595127011687,
+      "cagr": -0.010478875802356957,
+      "sharpe": -0.14819767719839994,
+      "sortino": -0.04603477845035844,
+      "max_drawdown": 0.20327344825638682,
+      "calmar": -0.051550637292973225,
+      "trades": 137,
+      "fees_paid": 546.6577092326494,
+      "strategy": "rsi_meanrev",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.027108952354620543,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 1.3788691577832366,
+      "cagr": 0.10278683318743465,
+      "sharpe": 0.6820408836461979,
+      "sortino": 0.6426519290778309,
+      "max_drawdown": 0.2483690998852055,
+      "calmar": 0.41384710591994744,
+      "trades": 577,
+      "fees_paid": 1699.3647401230219,
+      "strategy": "voltarget_trend",
+      "variant": "risk_5pct_kill25",
+      "avg_exposure": 0.18617200488625613,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 100,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 100,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 13.496190803509272,
+      "cagr": 0.35239487892606935,
+      "sharpe": 0.9076062586191427,
+      "sortino": 0.9634933045940055,
+      "max_drawdown": 0.579585194284477,
+      "calmar": 0.608012217015164,
+      "trades": 130,
+      "fees_paid": 10061.488867355381,
+      "strategy": "sma_trend",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.545330501087918,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 150
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 150
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 150
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 50
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 200
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 2.1839369582761736,
+      "cagr": 0.1396822930105035,
+      "sharpe": 0.5195681142729125,
+      "sortino": 0.5097570573056618,
+      "max_drawdown": 0.700598805131218,
+      "calmar": 0.19937557984321974,
+      "trades": 66,
+      "fees_paid": 1323.4979219399572,
+      "strategy": "dual_ma",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.5568376235733301,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "fast": 50,
+            "slow": 200
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "fast": 20,
+            "slow": 100
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "fast": 50,
+            "slow": 200
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "fast": 10,
+            "slow": 50
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 7.071585426909396,
+      "cagr": 0.2658844202427979,
+      "sharpe": 0.8011613445222969,
+      "sortino": 0.7886388274119939,
+      "max_drawdown": 0.5322915274837315,
+      "calmar": 0.49950902186945695,
+      "trades": 74,
+      "fees_paid": 2951.5636764932938,
+      "strategy": "donchian",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.42676728228308075,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "entry": 100,
+            "exit": 50
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "entry": 55,
+            "exit": 20
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "entry": 55,
+            "exit": 20
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "entry": 20,
+            "exit": 10
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 4.924264811480075,
+      "cagr": 0.22244426849971144,
+      "sharpe": 0.6654088119408149,
+      "sortino": 0.7307381068842644,
+      "max_drawdown": 0.6246816834794697,
+      "calmar": 0.35609218964241024,
+      "trades": 156,
+      "fees_paid": 4984.387809824718,
+      "strategy": "tsmom",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.576726816597427,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "lookback": 60
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "lookback": 30
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "lookback": 180
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "lookback": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": -0.10230703123550633,
+      "cagr": -0.012110853814549238,
+      "sharpe": 0.034445847951649435,
+      "sortino": 0.012803629581453504,
+      "max_drawdown": 0.493810118566986,
+      "calmar": -0.02452532534103265,
+      "trades": 126,
+      "fees_paid": 1005.6408898342373,
+      "strategy": "rsi_meanrev",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.07248997979313064,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 4,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 2,
+            "buy": 20,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 2,
+            "buy": 10,
+            "sell": 60
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 4,
+            "buy": 10,
+            "sell": 60
+          }
+        }
+      ]
+    },
+    {
+      "total_return": 7.09421906026285,
+      "cagr": 0.26628467554931423,
+      "sharpe": 0.9127166973755861,
+      "sortino": 1.0355705897973781,
+      "max_drawdown": 0.4753177626372178,
+      "calmar": 0.5602245413087028,
+      "trades": 438,
+      "fees_paid": 5326.7594317211715,
+      "strategy": "voltarget_trend",
+      "variant": "risk_layer_off",
+      "avg_exposure": 0.43688907609914396,
+      "params_by_year": [
+        {
+          "year": 2018,
+          "params": {
+            "n": 200,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2019,
+          "params": {
+            "n": 200,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2020,
+          "params": {
+            "n": 100,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2021,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2022,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2023,
+          "params": {
+            "n": 50,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2024,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        },
+        {
+          "year": 2025,
+          "params": {
+            "n": 200,
+            "target_vol": 0.6
+          }
+        },
+        {
+          "year": 2026,
+          "params": {
+            "n": 50,
+            "target_vol": 0.4
+          }
+        }
+      ]
+    }
+  ]
+}

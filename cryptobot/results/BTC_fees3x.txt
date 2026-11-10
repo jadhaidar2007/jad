@@ -1,0 +1,21 @@
+BTC-USD_1d_fees3x: out-of-sample 2018-01-01 to 2026-11-07 (fees+slippage x3.0 of 0.10%+0.05% per side)
+       strategy          variant  total_return  cagr  sharpe  sortino  max_drawdown  calmar  avg_exposure  trades  fees_paid
+       donchian   risk_layer_off          7.66  0.28    0.83     0.81          0.54    0.51          0.40      66    8577.37
+      sma_trend   risk_layer_off          8.85  0.29    0.81     0.86          0.61    0.48          0.55     130   23788.49
+        dual_ma    risk_layer_on          0.57  0.05    0.79     0.69          0.14    0.39          0.06     247    1017.18
+voltarget_trend   risk_layer_off          4.62  0.22    0.78     0.89          0.50    0.43          0.44     437   12705.94
+       donchian    risk_layer_on          0.62  0.06    0.77     0.71          0.12    0.46          0.07     266    1244.38
+        dual_ma risk_5pct_kill25          1.65  0.12    0.76     0.64          0.27    0.43          0.15     440    3532.60
+       donchian risk_5pct_kill25          1.64  0.12    0.72     0.62          0.25    0.47          0.15     437    4113.06
+       buy_hold        benchmark          4.55  0.21    0.63     0.84          0.82    0.26          1.00       1      10.01
+      sma_trend    risk_layer_on          0.34  0.03    0.52     0.50          0.13    0.25          0.08     367    1593.72
+voltarget_trend    risk_layer_on          0.34  0.03    0.52     0.50          0.13    0.25          0.08     367    1593.72
+        dual_ma   risk_layer_off          1.61  0.11    0.47     0.46          0.72    0.16          0.56      66    3513.28
+      sma_trend risk_5pct_kill25          0.73  0.06    0.46     0.43          0.29    0.22          0.19     577    4266.97
+          tsmom   risk_layer_off          1.37  0.10    0.45     0.46          0.80    0.13          0.58     154    7178.24
+voltarget_trend risk_5pct_kill25          0.26  0.03    0.25     0.22          0.30    0.09          0.18     556    3555.19
+          tsmom risk_5pct_kill25          0.06  0.01    0.12     0.10          0.37    0.02          0.14     486    3276.49
+          tsmom    risk_layer_on          0.01  0.00    0.05     0.04          0.20    0.00          0.06     333    1391.96
+    rsi_meanrev   risk_layer_off         -0.24 -0.03   -0.07    -0.02          0.57   -0.05          0.06     108    2135.83
+    rsi_meanrev risk_5pct_kill25         -0.10 -0.01   -0.22    -0.07          0.27   -0.05          0.02     104    1127.63
+    rsi_meanrev    risk_layer_on         -0.05 -0.01   -0.25    -0.07          0.13   -0.04          0.01      87     517.80
