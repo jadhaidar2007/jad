@@ -1,5 +1,38 @@
 # ClipEngine
 
+**Purpose.** Give it a YouTube link and it produces short, captioned clips and can post them to YouTube Shorts, TikTok and Instagram Reels, unattended once accounts are authorised.
+
+**Tech.** Python, yt-dlp, Whisper, an LLM for clip selection (DeepSeek by default), ffmpeg, a queue worker (Docker Compose), and official platform upload APIs. `earnings.py` is a local SQLite tracker for campaign views, estimated payouts and amounts received.
+
+**How to run.**
+
+```bash
+cp .env.example .env    # add API keys and upload tokens; see the setup section below
+docker compose up --build --scale worker=3
+
+curl -X POST localhost:8000/clip \
+  -H 'Content-Type: application/json' \
+  -d '{"youtube_url": "https://youtu.be/VIDEO_ID"}'
+```
+
+One-time OAuth setup is required for YouTube, TikTok and Instagram before uploads can run unattended (Google Cloud / TikTok / Meta developer apps). Details are in the setup notes below.
+
+Track earnings:
+
+```bash
+python earnings.py campaign add "Streamer X" --rate 1.5 --cap 100
+python earnings.py clip add "Streamer X" https://tiktok.com/@me/video/123 --views 4200
+python earnings.py report
+```
+
+`analyze_campaign.py` reads a campaign listing and returns GO / CAUTION / NO-GO against your country and platforms.
+
+**Result.** A working end-to-end pipeline: link in, queued job, clipped and captioned 9:16 videos out, with optional scheduled uploads and a SQL earnings report. No public usage metrics yet — add them here once you have them (for example clips posted, or time saved per video).
+
+---
+
+## Full setup notes
+
 Send it a YouTube link, it downloads the video, transcribes it, picks up to
 10 of the best standalone moments with an LLM, cuts + reframes them to 9:16
 with burned-in captions, and posts each one to YouTube Shorts, TikTok, and
