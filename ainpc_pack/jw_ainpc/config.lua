@@ -84,7 +84,7 @@ Config.Actions = {
 }
 
 --[[ NPCs. Coordinates are vanilla GTA V positions taken from commonly published shop/location data.
-     VERIFY THEM IN GAME before going live (MLOs move interiors). Use /ainpc coords in game to print yours. ]]
+     VERIFY THEM IN GAME before going live (MLOs move interiors). Use /ainpc_coords in game to print yours. ]]
 Config.NPCs = {
     {
         id = 'unicorn_bartender',

@@ -1,0 +1,18 @@
+jw_ainpc - Commercial License (v1.0)
+
+Copyright (c) 2026 JW Scripts. All rights reserved.
+
+1. Grant. On purchase you receive a non-exclusive, non-transferable licence to run jw_ainpc on
+   FiveM servers whose server key belongs to the Cfx.re account that made the purchase.
+   (Asset Escrow technically enforces this binding to the purchasing account.)
+2. You may edit the unencrypted files (config.lua, locales/, bridge/, examples/, html/) for use on
+   your own servers.
+3. You may not resell, share, re-upload, leak, sublicense or redistribute the resource or any part of
+   it, modified or not, nor publish the unencrypted files as part of another product.
+4. Third-party services: the resource sends player messages to the AI provider you configure, using
+   your own API key. You are responsible for that provider's costs and terms and for informing your
+   players that NPC conversations are processed by an AI service.
+5. No warranty. The software is provided "as is", without warranty of any kind. In no event shall the
+   author be liable for any claim, damages or other liability arising from its use, including AI
+   provider charges.
+6. Breach of these terms ends the licence automatically. Refunds follow Tebex's policy.

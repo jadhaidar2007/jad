@@ -10,7 +10,7 @@ lua5.4 tools/boot_sim.lua > /dev/null
 if grep -rEn "sk-ant-[A-Za-z0-9]|sk-[A-Za-z0-9]{20,}" jw_ainpc; then echo "API key found in resource, aborting"; exit 1; fi
 mkdir -p dist
 rm -f "dist/jw_ainpc_v${VERSION}.zip"
-cp ../ainpc_pack/LICENSE jw_ainpc/LICENSE
+cp LICENSE jw_ainpc/LICENSE
 zip -qr "dist/jw_ainpc_v${VERSION}.zip" jw_ainpc -x '*.DS_Store'
 rm jw_ainpc/LICENSE
 echo "built dist/jw_ainpc_v${VERSION}.zip"
