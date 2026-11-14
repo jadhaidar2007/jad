@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jw_ainpc</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="panel" class="hidden" role="dialog" aria-labelledby="npc-name">
+  <header>
+    <div class="avatar" id="avatar"></div>
+    <div class="who">
+      <div id="npc-name"></div>
+      <div id="npc-role"></div>
+    </div>
+    <button id="close" aria-label="close">&times;</button>
+  </header>
+  <main id="log" aria-live="polite"></main>
+  <div id="typing" class="hidden"><span></span><span></span><span></span> <em id="typing-label"></em></div>
+  <form id="form" autocomplete="off">
+    <input id="input" type="text" maxlength="200">
+    <button id="send" type="submit"></button>
+  </form>
+  <footer id="hint"></footer>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

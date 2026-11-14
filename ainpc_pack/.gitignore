@@ -1,0 +1,8 @@
+.env
+*.key
+server.cfg
+server-data/
+fxserver/
+txData/
+cache/
+*.log

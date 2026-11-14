@@ -1,0 +1,61 @@
+local H = require('helper')
+
+describe('Memory', function()
+    before_each(H.reset)
+
+    it('stores per player and per npc separately', function()
+        local m = AINPC.Memory.new(3)
+        m:add('p1', 'bar', 'user', 'hi')
+        m:add('p1', 'cop', 'user', 'yo')
+        m:add('p2', 'bar', 'user', 'hey')
+        assert.equal(1, #m:get('p1', 'bar'))
+        assert.equal('yo', m:get('p1', 'cop')[1].content)
+        assert.equal('hey', m:get('p2', 'bar')[1].content)
+    end)
+
+    it('trims to N exchanges keeping the newest, starting on a user turn', function()
+        local m = AINPC.Memory.new(2)
+        for i = 1, 5 do
+            m:add('p', 'n', 'user', 'q' .. i)
+            m:add('p', 'n', 'assistant', 'a' .. i)
+        end
+        local h = m:get('p', 'n')
+        assert.equal(4, #h)
+        assert.equal('q4', h[1].content)
+        assert.equal('user', h[1].role)
+        assert.equal('a5', h[4].content)
+    end)
+
+    it('drops a leading assistant message after trimming', function()
+        local m = AINPC.Memory.new(1)
+        m:add('p', 'n', 'user', 'q1'); m:add('p', 'n', 'assistant', 'a1'); m:add('p', 'n', 'assistant', 'a2')
+        local h = m:get('p', 'n')
+        assert.equal(0, #h)
+    end)
+
+    it('returns copies, not internal tables', function()
+        local m = AINPC.Memory.new(3)
+        m:add('p', 'n', 'user', 'hi')
+        m:get('p', 'n')[1].content = 'tampered'
+        assert.equal('hi', m:get('p', 'n')[1].content)
+    end)
+
+    it('set() ignores malformed entries from the database', function()
+        local m = AINPC.Memory.new(3)
+        m:set('p', 'n', { { role = 'user', content = 'ok' }, { role = 'system', content = 'evil' }, 'junk',
+            { role = 'assistant', content = 5 }, { role = 'assistant', content = 'fine' } })
+        local h = m:get('p', 'n')
+        assert.equal(2, #h)
+        assert.is_true(m:isLoaded('p', 'n'))
+        m:set('p', 'x', 'not a table')
+        assert.equal(0, #m:get('p', 'x'))
+    end)
+
+    it('forgets a player', function()
+        local m = AINPC.Memory.new(3)
+        m:add('p', 'n', 'user', 'hi'); m:markLoaded('p', 'n')
+        m:forgetPlayer('p')
+        assert.equal(0, #m:get('p', 'n'))
+        assert.is_false(m:isLoaded('p', 'n'))
+    end)
+end)
