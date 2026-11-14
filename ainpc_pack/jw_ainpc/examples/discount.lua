@@ -5,6 +5,7 @@ local discounts = {} -- src -> { pct, expires }
 
 AddEventHandler('jw_ainpc:action', function(src, npcId, action, pct)
     if action ~= 'discount' then return end
+    if not src or src <= 0 then return end -- console test (/ainpc test)
     discounts[src] = { pct = pct, expires = os.time() + 600, npc = npcId }
     local text = ('You earned %d%% off your next purchase (10 min).'):format(pct)
     TriggerClientEvent('chat:addMessage', src, { args = { 'Shop', text } })

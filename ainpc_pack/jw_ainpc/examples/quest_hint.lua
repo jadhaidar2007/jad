@@ -7,6 +7,7 @@ local HINTS = {
 
 AddEventHandler('jw_ainpc:action', function(src, _, action, hintId)
     if action ~= 'give_hint' then return end
+    if not src or src <= 0 then return end -- console test (/ainpc test)
     local text = HINTS[hintId]
     if not text then return end
     TriggerClientEvent('chat:addMessage', src, { args = { 'Note', text } })

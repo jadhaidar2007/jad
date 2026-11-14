@@ -12,11 +12,15 @@ function Anthropic.buildRequest(pcfg, apiKey, prompt, json)
         system = prompt.system,
         messages = prompt.messages,
     }
-    if pcfg.temperature then body.temperature = pcfg.temperature end
+    -- Current Claude models think adaptively by default and thinking tokens count toward max_tokens.
+    -- Low effort keeps NPC chat fast and cheap. Set Config.Provider.effort = false to omit it.
+    if pcfg.effort ~= false then body.output_config = { effort = pcfg.effort or 'low' } end
+    -- Sampling params (temperature/top_p/top_k) are deliberately never sent: current Claude models and
+    -- API version 2026-10-21 reject them with HTTP 400. Personality comes from the persona instead.
     local headers = {
         ['Content-Type'] = 'application/json',
         ['x-api-key'] = apiKey,
-        ['anthropic-version'] = pcfg.apiVersion or '2023-06-01',
+        ['anthropic-version'] = pcfg.apiVersion or '2026-10-21',
     }
     local url = pcfg.url or 'https://api.anthropic.com/v1/messages'
     return url, 'POST', json.encode(body), headers

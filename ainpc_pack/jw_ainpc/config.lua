@@ -16,8 +16,9 @@ Config.Interaction = 'auto'       -- auto | ox_target | qb-target | prompt
 Config.Provider = {
     type = 'anthropic',           -- anthropic | openai_compat
     model = 'claude-haiku-5-5',   -- fast and cheap; any Claude model id works
-    maxTokens = 200,
-    temperature = 0.8,
+    maxTokens = 400,             -- includes any thinking tokens; reply length is capped by MaxReplyChars
+    effort = 'low',              -- anthropic only: low | medium | high (low = fastest, cheapest)
+    -- temperature = 0.8,         -- openai_compat only; ignored for Claude (rejected by the API)
     -- url = 'https://api.anthropic.com/v1/messages',
     --
     -- OpenAI-compatible examples (set type = 'openai_compat'):

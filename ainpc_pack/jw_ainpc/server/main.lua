@@ -126,7 +126,7 @@ local function reloadConfig()
     local raw = LoadResourceFile(RES, 'config.lua')
     if not raw then return false, 'config.lua not found' end
     -- Runs in the resource's global env so it replaces the global Config, exactly like at startup.
-    local chunk, err = load(raw, '@config.lua', 't')
+    local chunk, err = load(raw, '@config.lua', 't', _ENV)
     if not chunk then return false, err end
     local ok, runErr = pcall(chunk)
     if not ok then return false, runErr end
